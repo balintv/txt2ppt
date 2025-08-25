@@ -177,10 +177,10 @@ with colB:
     font_size_pt = st.number_input("Betűméret (pt)", min_value=8.0, max_value=200.0, value=44.0, step=1.0)
 
     st.markdown("**Külső margók (cm)**")
-    m_top_cm = st.number_input("Felső margó", 0.0, 10.0, 1, 0.01)
-    m_bottom_cm = st.number_input("Alsó margó", 0.0, 10.0, 1, 0.01)
-    m_left_cm = st.number_input("Bal margó", 0.0, 20.0, 3, 0.01)
-    m_right_cm = st.number_input("Jobb margó", 0.0, 20.0, 3, 0.01)
+    m_top_cm = st.number_input("Felső margó", 0.0, 10.0, 1.0, 0.01)
+    m_bottom_cm = st.number_input("Alsó margó", 0.0, 10.0, 1.0, 0.01)
+    m_left_cm = st.number_input("Bal margó", 0.0, 20.0, 3.0, 0.01)
+    m_right_cm = st.number_input("Jobb margó", 0.0, 20.0, 3.0, 0.01)
 
     with st.expander("Bekezdés-behúzások"):
         para_left_indent_cm = st.number_input("Bal bekezdés-behúzás (cm)", 0.0, 20.0, 0.0, 0.1)
