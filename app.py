@@ -287,6 +287,7 @@ with fmt_col:
 
         st.write("")
         blank_on_empty = st.checkbox("Üres sor → üres dia", value=True)
+        st.write("")
 
     else:
         st.markdown("#### Kétnyelvű tipográfia")
@@ -297,6 +298,7 @@ with fmt_col:
         prim_bold = st.checkbox("Primer félkövér", value=False, key="prim_bold")
         prim_italic = st.checkbox("Primer dőlt", value=True, key="prim_italic")
         prim_offset = st.number_input("Primer alsó offset (cm)", 0.0, 10.0, 1.0, 0.1, key="prim_off")
+        st.write("")
 
         st.write("***Szekunder (fölötte lévő) sor:***")
         sec_font = st.text_input("Szekunder betűtípus", value="Arial", key="sec_font")
@@ -305,6 +307,7 @@ with fmt_col:
         sec_bold = st.checkbox("Szekunder félkövér", value=False, key="sec_bold")
         sec_italic = st.checkbox("Szekunder dőlt", value=False, key="sec_italic")
         sec_offset = st.number_input("Szekunder alsó offset (cm)", 0.0, 10.0, 5.0, 0.1, key="sec_off")
+        st.write("")
 
         st.markdown("#### Elrendezés")
         bottom_band = st.number_input("Szövegdoboz magasság (cm)", 1.0, 10.0, 4.0, 0.1, key="band_h")
@@ -314,6 +317,7 @@ with fmt_col:
         st.write("")
         use_blank_sep = st.checkbox("Üres sor csak elválasztó", value=False)
         bi_blankline_slide = st.checkbox("Üres sor → üres dia", value=True)
+        st.write("")
 
 if st.button("PPTX generálása", type="primary", use_container_width=True):
     if not uploaded:
