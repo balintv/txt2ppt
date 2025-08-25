@@ -263,11 +263,9 @@ st.subheader("Beállítások")
 mode_col, fmt_col = st.columns([1,2])
 
 with mode_col:
-    bilingual = st.checkbox("Bilingual mode (2 lines/slide)", value=False)
-    use_blank_sep = st.checkbox("Üres sor csak elválasztó (bilingual)", value=True)
-    bi_blankline_slide = st.checkbox("Üres sor → üres dia (bilingual)", value=False)
+    bilingual = st.checkbox("Bilingual mode (2 sor/dia)", value=False)
     widescreen = st.checkbox("Widescreen 16:9", value=True)
-    shrink = st.checkbox("Hosszú sorok zsugorítása", value=True)
+    shrink = st.checkbox("Hosszú sorok tördelése", value=True)
     align_center = st.checkbox("Középre igazítás", value=True)
     bg_hex = st.color_picker("Háttér szín", "#000000")
 
@@ -286,7 +284,7 @@ with fmt_col:
         m_left_cm = st.number_input("Bal margó", 0.0, 20.0, 3.0, 0.01)
         m_right_cm = st.number_input("Jobb margó", 0.0, 20.0, 3.0, 0.01)
 
-        blank_on_empty = st.checkbox("Üres sor → üres dia (line mód)", value=True)
+        blank_on_empty = st.checkbox("Üres sor → üres dia", value=True)
 
     else:
         st.markdown("**Kétnyelvű tipográfia**")
@@ -296,7 +294,7 @@ with fmt_col:
         prim_hex = st.color_picker("Primer szín", "#FFFFFF", key="prim_hex")
         prim_bold = st.checkbox("Primer félkövér", value=False, key="prim_bold")
         prim_italic = st.checkbox("Primer dőlt", value=True, key="prim_italic")
-        prim_offset = st.number_input("Primer alsó offset (cm)", 0.0, 10.0, 0.0, 0.1, key="prim_off")
+        prim_offset = st.number_input("Primer alsó offset (cm)", 0.0, 10.0, 1.0, 0.1, key="prim_off")
 
         st.write("Szekunder (fölötte lévő) sor:")
         sec_font = st.text_input("Szekunder betűtípus", value="Arial", key="sec_font")
@@ -304,12 +302,15 @@ with fmt_col:
         sec_hex = st.color_picker("Szekunder szín", "#C8C8C8", key="sec_hex")
         sec_bold = st.checkbox("Szekunder félkövér", value=False, key="sec_bold")
         sec_italic = st.checkbox("Szekunder dőlt", value=False, key="sec_italic")
-        sec_offset = st.number_input("Szekunder alsó offset (cm)", 0.0, 10.0, 1.6, 0.1, key="sec_off")
+        sec_offset = st.number_input("Szekunder alsó offset (cm)", 0.0, 10.0, 5.0, 0.1, key="sec_off")
 
         st.markdown("**Elrendezés**")
-        bottom_band = st.number_input("Szövegdoboz magasság (cm)", 1.0, 10.0, 2.5, 0.1, key="band_h")
+        bottom_band = st.number_input("Szövegdoboz magasság (cm)", 1.0, 10.0, 4.0, 0.1, key="band_h")
         m_left_cm = st.number_input("Bal margó (cm)", 0.0, 20.0, 3.0, 0.01, key="biml")
         m_right_cm = st.number_input("Jobb margó (cm)", 0.0, 20.0, 3.0, 0.01, key="bimr")
+
+        use_blank_sep = st.checkbox("Üres sor csak elválasztó", value=False)
+        bi_blankline_slide = st.checkbox("Üres sor → üres dia", value=True)
 
 if st.button("PPTX generálása", type="primary", use_container_width=True):
     if not uploaded:
