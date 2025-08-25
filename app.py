@@ -264,7 +264,7 @@ mode_col, fmt_col = st.columns([1,2])
 
 with mode_col:
     bilingual = st.checkbox("Bilingual mode (2 sor/dia)", value=False)
-    st.markdown("---")
+    st.write("")
     widescreen = st.checkbox("Widescreen 16:9", value=True)
     shrink = st.checkbox("Hosszú sorok tördelése", value=True)
     align_center = st.checkbox("Középre igazítás", value=True)
@@ -272,28 +272,25 @@ with mode_col:
 
 with fmt_col:
     if not bilingual:
-        st.markdown("**Egynyelvű tipográfia**")
+        st.markdown("#### Egynyelvű tipográfia")
         font_name = st.text_input("Betűtípus", value="Arial")
         font_size_pt = st.number_input("Betűméret (pt)", 8.0, 200.0, 44.0, 1.0)
         font_hex = st.color_picker("Szöveg szín", "#FFFFFF")
         single_bold = st.checkbox("Félkövér", value=False)
         single_italic = st.checkbox("Dőlt", value=False)
 
-        st.markdown("---")
-
-        st.markdown("**Külső margók (cm)**")
+        st.markdown("#### Külső margók (cm)")
         m_top_cm = st.number_input("Felső margó", 0.0, 10.0, 1.0, 0.01)
         m_bottom_cm = st.number_input("Alsó margó", 0.0, 10.0, 1.0, 0.01)
         m_left_cm = st.number_input("Bal margó", 0.0, 20.0, 3.0, 0.01)
         m_right_cm = st.number_input("Jobb margó", 0.0, 20.0, 3.0, 0.01)
 
-        st.markdown("---")
-
+        st.write("")
         blank_on_empty = st.checkbox("Üres sor → üres dia", value=True)
 
     else:
-        st.markdown("**Kétnyelvű tipográfia**")
-        st.write("Primer (alsóbb) sor:")
+        st.markdown("#### Kétnyelvű tipográfia")
+        st.write("***Primer (alsóbb) sor:***")
         prim_font = st.text_input("Primer betűtípus", value="Arial", key="prim_font")
         prim_size = st.number_input("Primer betűméret (pt)", 8.0, 200.0, 44.0, 1.0, key="prim_size")
         prim_hex = st.color_picker("Primer szín", "#FFFFFF", key="prim_hex")
@@ -301,9 +298,7 @@ with fmt_col:
         prim_italic = st.checkbox("Primer dőlt", value=True, key="prim_italic")
         prim_offset = st.number_input("Primer alsó offset (cm)", 0.0, 10.0, 1.0, 0.1, key="prim_off")
 
-        st.markdown("---")
-
-        st.write("Szekunder (fölötte lévő) sor:")
+        st.write("***Szekunder (fölötte lévő) sor:***")
         sec_font = st.text_input("Szekunder betűtípus", value="Arial", key="sec_font")
         sec_size = st.number_input("Szekunder betűméret (pt)", 8.0, 200.0, 44.0, 1.0, key="sec_size")
         sec_hex = st.color_picker("Szekunder szín", "#C8C8C8", key="sec_hex")
@@ -311,15 +306,12 @@ with fmt_col:
         sec_italic = st.checkbox("Szekunder dőlt", value=False, key="sec_italic")
         sec_offset = st.number_input("Szekunder alsó offset (cm)", 0.0, 10.0, 5.0, 0.1, key="sec_off")
 
-        st.markdown("---")
-
-        st.markdown("**Elrendezés**")
+        st.markdown("#### Elrendezés")
         bottom_band = st.number_input("Szövegdoboz magasság (cm)", 1.0, 10.0, 4.0, 0.1, key="band_h")
         m_left_cm = st.number_input("Bal margó (cm)", 0.0, 20.0, 3.0, 0.01, key="biml")
         m_right_cm = st.number_input("Jobb margó (cm)", 0.0, 20.0, 3.0, 0.01, key="bimr")
 
-        st.markdown("---")
-
+        st.write("")
         use_blank_sep = st.checkbox("Üres sor csak elválasztó", value=False)
         bi_blankline_slide = st.checkbox("Üres sor → üres dia", value=True)
 
