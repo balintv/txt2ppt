@@ -89,19 +89,25 @@ def add_background_slide(prs: Presentation, bg_rgb=(0,0,0)):
     fill.fore_color.rgb = RGBColor(*bg_rgb)
     return slide
 
-def add_textbox_bottom(
+def add_textbox(
     slide, text, *,
     area_left, area_top, area_width, area_height,
     font_name="Arial", font_size_pt=44, font_rgb=(255,255,255),
     bold=False, italic=False,
-    align_center=True, shrink_to_fit=True
+    align_center=True, shrink_to_fit=True,
+    vertical_position="bottom"   # "bottom" vagy "top"
 ):
     tb = slide.shapes.add_textbox(area_left, area_top, area_width, area_height)
     tf = tb.text_frame
     tf.clear()
     tf.word_wrap = True
     tf.margin_top = tf.margin_bottom = tf.margin_left = tf.margin_right = 0
-    tf.vertical_anchor = MSO_ANCHOR.BOTTOM
+
+    if vertical_position == "top":
+        tf.vertical_anchor = MSO_ANCHOR.TOP
+    else:
+        tf.vertical_anchor = MSO_ANCHOR.BOTTOM
+
     if shrink_to_fit:
         tf.auto_size = MSO_AUTO_SIZE.TEXT_TO_FIT_SHAPE
 
@@ -119,7 +125,8 @@ def add_text_slide_single(
     m_top_cm=0.13, m_bottom_cm=0.13, m_left_cm=0.25, m_right_cm=0.25,
     font_name="Arial", font_size_pt=44, font_rgb=(255,255,255),
     bold=False, italic=False,
-    bg_rgb=(0,0,0), align_center=True, shrink_to_fit=True
+    bg_rgb=(0,0,0), align_center=True, shrink_to_fit=True,
+    vertical_position="bottom"
 ):
     slide = add_background_slide(prs, bg_rgb=bg_rgb)
     sw, sh = prs.slide_width, prs.slide_height
@@ -127,54 +134,61 @@ def add_text_slide_single(
     width = sw - (Cm(m_left_cm) + Cm(m_right_cm))
     height = sh - (Cm(m_top_cm) + Cm(m_bottom_cm))
     top = Cm(m_top_cm)
-    add_textbox_bottom(
+
+    add_textbox(
         slide, text,
         area_left=left, area_top=top, area_width=width, area_height=height,
         font_name=font_name, font_size_pt=font_size_pt, font_rgb=font_rgb,
         bold=bold, italic=italic,
-        align_center=align_center, shrink_to_fit=shrink_to_fit
+        align_center=align_center, shrink_to_fit=shrink_to_fit,
+        vertical_position=vertical_position
     )
 
 def add_text_slide_bilingual(
     prs: Presentation, line1: str, line2: str, *,
     m_left_cm=0.25, m_right_cm=0.25,
-    bottom_band_height_cm=2.5,
-    primary_bottom_offset_cm=0.0,
-    secondary_bottom_offset_cm=1.6,
-    primary_font=("Arial", 44, (255,255,255), False, False),  # name, size, color, bold, italic
+    text_band_height_cm=2.5,
+    primary_offset_cm=0.0,
+    secondary_offset_cm=1.6,
+    primary_font=("Arial", 44, (255,255,255), False, False),
     secondary_font=("Arial", 36, (200,200,200), False, False),
     bg_rgb=(0,0,0),
     align_center=True,
-    shrink_to_fit=True
+    shrink_to_fit=True,
+    vertical_position="bottom"
 ):
     slide = add_background_slide(prs, bg_rgb=bg_rgb)
     sw, sh = prs.slide_width, prs.slide_height
 
     left = Cm(m_left_cm)
     width = sw - (Cm(m_left_cm) + Cm(m_right_cm))
+    band_h = Cm(text_band_height_cm)
 
-    # primer (alsóbb) textbox
-    ph = Cm(bottom_band_height_cm)
-    p_bottom = Cm(primary_bottom_offset_cm)
-    p_top = sh - p_bottom - ph
-    add_textbox_bottom(
+    if vertical_position == "top":
+        # top-aligned: offset a dia tetejétől értendő
+        p_top = Cm(primary_offset_cm)
+        s_top = Cm(secondary_offset_cm)
+    else:
+        # bottom-aligned: offset a dia aljától értendő
+        p_top = sh - Cm(primary_offset_cm) - band_h
+        s_top = sh - Cm(secondary_offset_cm) - band_h
+
+    add_textbox(
         slide, line1,
-        area_left=left, area_top=p_top, area_width=width, area_height=ph,
+        area_left=left, area_top=p_top, area_width=width, area_height=band_h,
         font_name=primary_font[0], font_size_pt=primary_font[1], font_rgb=primary_font[2],
         bold=primary_font[3], italic=primary_font[4],
-        align_center=align_center, shrink_to_fit=shrink_to_fit
+        align_center=align_center, shrink_to_fit=shrink_to_fit,
+        vertical_position=vertical_position
     )
 
-    # szekunder (fölötte lévő) textbox
-    sh_h = Cm(bottom_band_height_cm)
-    s_bottom = Cm(secondary_bottom_offset_cm)
-    s_top = sh - s_bottom - sh_h
-    add_textbox_bottom(
+    add_textbox(
         slide, line2,
-        area_left=left, area_top=s_top, area_width=width, area_height=sh_h,
+        area_left=left, area_top=s_top, area_width=width, area_height=band_h,
         font_name=secondary_font[0], font_size_pt=secondary_font[1], font_rgb=secondary_font[2],
         bold=secondary_font[3], italic=secondary_font[4],
-        align_center=align_center, shrink_to_fit=shrink_to_fit
+        align_center=align_center, shrink_to_fit=shrink_to_fit,
+        vertical_position=vertical_position
     )
 
 def build_ppt(
@@ -195,7 +209,8 @@ def build_ppt(
     secondary_font=("Arial", 36, (200,200,200), False, False),
     # common
     bg_rgb=(0,0,0),
-    align_center=True
+    align_center=True,
+    vertical_position="bottom"
 ) -> bytes:
     prs = Presentation()
     if widescreen:
@@ -209,11 +224,12 @@ def build_ppt(
                 add_text_slide_bilingual(
                     prs, l1, l2,
                     m_left_cm=m_left_cm, m_right_cm=m_right_cm,
-                    bottom_band_height_cm=bottom_band_height_cm,
-                    primary_bottom_offset_cm=primary_bottom_offset_cm,
-                    secondary_bottom_offset_cm=secondary_bottom_offset_cm,
+                    text_band_height_cm=bottom_band_height_cm,
+                    primary_offset_cm=primary_bottom_offset_cm,
+                    secondary_offset_cm=secondary_bottom_offset_cm,
                     primary_font=primary_font, secondary_font=secondary_font,
-                    bg_rgb=bg_rgb, align_center=align_center, shrink_to_fit=shrink_to_fit
+                    bg_rgb=bg_rgb, align_center=align_center, shrink_to_fit=shrink_to_fit,
+                    vertical_position=vertical_position
                 )
             else:
                 # item == ("", "") eset helyett egy stringes jelzés is lehet – itt üres dia
@@ -228,7 +244,8 @@ def build_ppt(
                     m_top_cm=m_top_cm, m_bottom_cm=m_bottom_cm, m_left_cm=m_left_cm, m_right_cm=m_right_cm,
                     font_name=font_name, font_size_pt=font_size_pt, font_rgb=font_rgb,
                     bold=single_bold, italic=single_italic,
-                    bg_rgb=bg_rgb, align_center=align_center, shrink_to_fit=shrink_to_fit
+                    bg_rgb=bg_rgb, align_center=align_center, shrink_to_fit=shrink_to_fit,
+                    vertical_position=vertical_position
                 )
 
     bio = io.BytesIO()
@@ -265,6 +282,13 @@ mode_col, fmt_col = st.columns([1,2])
 with mode_col:
     bilingual = st.checkbox("Bilingual mode (2 sor/dia)", value=False)
     st.write("")
+    
+    caption_position = st.radio(
+    "Felirat pozíciója",
+    ["bottom", "top"],
+    index=0,
+    format_func=lambda x: "Dia alján" if x == "bottom" else "Dia tetején"
+)
     widescreen = st.checkbox("Widescreen 16:9", value=True)
     shrink = st.checkbox("Hosszú sorok tördelése", value=True)
     align_center = st.checkbox("Középre igazítás", value=True)
@@ -344,7 +368,8 @@ if st.button("PPTX generálása", type="primary", use_container_width=True):
                 primary_bottom_offset_cm=prim_offset,
                 secondary_bottom_offset_cm=sec_offset,
                 primary_font=primary_font, secondary_font=secondary_font,
-                bg_rgb=bg_rgb, align_center=align_center
+                bg_rgb=bg_rgb, align_center=align_center,
+                vertical_position=caption_position
             )
             st.success(f"Siker! {len([p for p in pairs if isinstance(p, tuple)])} kétnyelvű dia + "
                        f"{len([p for p in pairs if not isinstance(p, tuple)])} üres dia.")
@@ -359,7 +384,8 @@ if st.button("PPTX generálása", type="primary", use_container_width=True):
                 m_left_cm=m_left_cm, m_right_cm=m_right_cm,
                 font_name=font_name, font_size_pt=font_size_pt, font_rgb=font_rgb,
                 single_bold=single_bold, single_italic=single_italic,
-                bg_rgb=bg_rgb, align_center=align_center
+                bg_rgb=bg_rgb, align_center=align_center,
+                vertical_position=caption_position
             )
             st.success(f"Siker! {len(items)} egynyelvű dia (az üres sorok külön diát kaphattak).")
 
